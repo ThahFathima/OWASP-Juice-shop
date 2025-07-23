@@ -27,6 +27,8 @@ jobs:
         uses: github/codeql-action/analyze@v3
 
   dast-zap:
+    # This job will only run on push events, not on pull requests.
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

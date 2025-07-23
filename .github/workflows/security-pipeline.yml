@@ -28,8 +28,6 @@ jobs:
 
   dast-zap:
     runs-on: ubuntu-latest
-    permissions:
-      actions: write # Required to upload artifacts
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -49,13 +47,3 @@ jobs:
           # Disable automatic issue creation
           allow_issue_writing: false
           fail_action: false
-
-      - name: Upload DAST Scan Reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: dast-scan-report
-          # The new action version saves reports to the root of the workspace
-          path: |
-            report_html.html
-            report_md.md
-            report_sarif.sarif

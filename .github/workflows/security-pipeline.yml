@@ -1,0 +1,60 @@
+name: DevSecOps Security Pipeline
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  sast-codeql:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write # Required to upload SARIF results
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript, typescript
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+  dast-zap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build and Run Juice Shop in background
+        run: |
+          docker build -t juice-shop .
+          docker run -d -p 3000:3000 --name juice-shop juice-shop
+          sleep 15 # Give the server time to start
+
+      - name: Run ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.7.0
+        with:
+          # The target URL of the application to be scanned
+          target: 'http://localhost:3000'
+          # Generate reports in different formats
+          report_html: 'true'
+          report_md: 'true'
+          report_sarif: 'true'
+          # Do not fail the build on warnings, just report them
+          fail_action: false
+
+      - name: Upload ZAP Scan Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: zap-scan-reports
+          path: |
+            zap_results/report.html
+            zap_results/report.md
+            zap_results/report.sarif

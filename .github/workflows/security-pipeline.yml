@@ -48,10 +48,10 @@ jobs:
           allow_issue_writing: false
           fail_action: false
 
-      - name: Upload ZAP Scan Reports
+      - name: Upload DAST Scan Reports
         uses: actions/upload-artifact@v4
         with:
-          name: zap-scan-reports
+          name: dast-scan-report
           # The new action version saves reports to the root of the workspace
           path: |
             report_html.html

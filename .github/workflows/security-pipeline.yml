@@ -28,6 +28,8 @@ jobs:
 
   dast-zap:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write # Required to upload artifacts
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

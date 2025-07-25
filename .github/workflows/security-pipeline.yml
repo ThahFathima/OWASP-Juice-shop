@@ -43,6 +43,7 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
+
   zap_scan:
     runs-on: ubuntu-latest
     name: Run ZAP Scan
@@ -64,7 +65,7 @@ jobs:
             -r zap_report.html
 
       - name: Upload ZAP Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: zap-report
           path: zap_report.html

@@ -67,7 +67,7 @@ jobs:
           docker run --rm \
             --network zap-net \
             -v ${{ github.workspace }}:/zap/wrk/:rw \
-            owasp/zap2docker-stable zap-baseline.py \
+            owasp/zap-bare zap-baseline.py \
             -t http://juice-shop:3000 \
             -r zap_report.html
 

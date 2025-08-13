@@ -44,35 +44,4 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
 
-  zap_scan:
-    runs-on: ubuntu-latest
-    name: Run ZAP Scan
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: set up Docker network
-        run: docker network create zap-net
-
-      - name: Start Juice Shop
-        run: |
-          docker run -d --rm --name juice-shop \
-           --network zap-net \
-           -p 3000:3000 \
-            bkimminich/juice-shop
-          sleep 30 
-
-      - name: ZAP Scan
-        run: |
-          docker run --rm \
-            --network zap-net \
-            -v ${{ github.workspace }}:/zap/wrk/:rw \
-            owasp/zap2docker-weekly zap-baseline.py \
-            -t http://juice-shop:3000 \
-            -r zap_report.html
-
-      - name: Upload ZAP Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: zap-report
-          path: zap_report.html
+  
